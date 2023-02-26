@@ -1,1 +1,1 @@
-# django_storefront app
+# django_storefront 
