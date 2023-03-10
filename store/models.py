@@ -2,19 +2,17 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-#good
-# Create your models here.
 class Collection(models.Model):
     title = models.CharField(max_length=255)
     featured_product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True, related_name='+')
 
-#good
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
     
 class Product(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(default="-")
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
@@ -38,6 +36,11 @@ class Customer(models.Model):
     phone = models.CharField(max_length=255)
     birthday = models.DateField(null=True)
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
+
+    class Meta:
+        db_table = "store_customers"
+        indexes = [models.Index(fields=["first_name", "last_name"])]
+
 
 class Order(models.Model):
     PAYMENT_PENDING = 'P'
@@ -72,12 +75,3 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField()
-
-class Tag(models.Model):
-    label = models.CharField(max_length=255)
-
-class TaggedItem(models.Model):
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey()

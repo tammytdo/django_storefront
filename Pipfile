@@ -5,8 +5,9 @@ name = "pypi"
 
 [packages]
 django-debug-toolbar = "*"
+django = "*"
+mysqlclient = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
